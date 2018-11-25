@@ -1,18 +1,15 @@
 <template lang="pug">
     div
-        h1 test aran!!!
-        input(type=text)
-        button(@click='start') test
+        h1 여기는 대문. 소셜로그인 붙일 것.
+        button(@click='login') login
 </template>
 
 <script>
-import router from '@/router'
-
 export default {
     methods:{
-        start(){
+        login(){
             console.log('click this')
-            router.push({name: `Home`})
+            this.$router.push({name: `Home`})
         }
     }
 };
