@@ -5,12 +5,14 @@
 </template>
 
 <script>
+import axios from "axios";
+const DOMAIN = "http://localhost:3500";
+
 export default {
-    methods:{
-        login(){
-            console.log('click this')
-            this.$router.push({name: `Home`})
-        }
+  methods: {
+    login() {
+      this.$router.push({ name: `Home` });
     }
+  }
 };
 </script>

@@ -1,63 +1,108 @@
 <template lang="pug">
-div
+  div(class='center')
     div
-        button(class='button is-primary btn' @click='goMain') Logout
-    hr
-    div(class='center')
-        b-field(grouped)
-            b-input(type='text' placeholder='comment' rounded expanded)
-            p(class="control")
-                button(@click='add' class='button is-primary btn') &#8629;
-    hr
-    div(class='center notification')
-        b-field(grouped)
-            div(class='commentRes') date
-            div(class='commentRes') @{{name}}
-            div(class='commentRes') {{comment}}
-            button(@click='edit' class='btn') 수정 또는 삭제 &#9998;
+      button(class='button is-primary btn' @click='goMain') Logout
+      hr
+
+    div
+      b-field(grouped)
+        b-input(type='text' placeholder='date' v-model='selectDate' rounded)
+        b-input(type='text'
+          placeholder='comment'
+          v-model='comment'
+          rounded expanded)
+        p(class="control")
+        button(@click='add' class='button is-primary btn') &#8629;
+      hr
+
+    div(class='notification')
+      b-field(grouped)
+        div(class='commentRes') date
+        div(class='commentRes') @{{name}}
+        div(class='commentRes') {{comment}}
+        button(@click='edit' class='btn') 수정 또는 삭제 &#9998;
+
+    div
+      span
+        b-field
+        b-datepicker(inline v-model='date', :events='events', :indicators='indicators' :selectable-date='selectDate')
 </template>
 
 <script>
+import Calendar from "./Calendar";
+import axios from "axios";
+import moment from "moment";
+const DOMAIN = "http://localhost:3500";
+
 export default {
-  // b-field(label="Name")
-  // 		b-input(value="Kevin Garvey")
-  name: 'home',
+  name: "home",
   data() {
     return {
-      name: 'aran',
-      comment: 'text test',
+      name: "",
+      comment: "",
+      feeling: "",
+      selectDate: ""
     };
   },
+  mixins: [Calendar],
   methods: {
+    /**
+     * / : select all [!] complate
+     * /add : comment, date, feeling 추가하기 [!] complate
+     * /del : date 삭제하기
+     * /update : comment, date, feeling 수정하기
+     * /getOne : date 한개 가져오기
+     */
     add() {
-      console.log('등록을 할거임');
+      let resDate = moment(this.date).format("YYYY-MM-DD");
+      axios
+        .post(`${DOMAIN}/lines/add`, {
+          comment: this.comment,
+          date: resDate,
+          feeling: 3
+        })
+        .then(res => {
+          this.comment = "";
+          this.getAll();
+        })
+        .catch(e => console.log(e));
     },
     edit() {
-      console.log('수정 또는 삭제');
+      console.log("수정 또는 삭제");
     },
     goMain() {
-      this.$router.push({ name: 'Main' })
+      this.$router.push({
+        name: "Main"
+      });
     }
-  },
-  created() { },
+  }
+  // updated() {
+  // if (this.events.find(this.date) != null) {
+  //   let te = this.date;
+  //   console.log(this.events.includes(te));
+  // }
+  // console.log(this.date);
+  // this.events.find(this.date);
+  // }
 };
 </script>
 
 <style scoped>
 #date {
-    font-family: 'Gaegu', cursive;
-    font-size: 1.5em;
+  font-family: "Gaegu", cursive;
+  font-size: 1.5em;
 }
+
 .center {
-    margin: auto;
-    width: 500px;
+  margin: auto;
+  width: 700px;
 }
 
 .commentRes {
-    font-size: 1.2em;
+  font-size: 1.2em;
 }
 
 .btn {
-    border-radius: 20px;
+  border-radius: 20px;
 }
 </style>
